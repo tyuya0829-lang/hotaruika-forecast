@@ -6,6 +6,9 @@ import {
   LEVEL_NAMES, LEVEL_COLORS, LEVEL_BG, LEVEL_TEXT, WeatherResponse
 } from '@/lib/forecast'
 import BulletinBoard from './BulletinBoard'
+import BattleWindow from './BattleWindow'
+import ActionButtons from './ActionButtons'
+import type { BattleWindow as BattleWindowType } from '@/lib/tide'
 
 const DAYS_JP = ['日', '月', '火', '水', '木', '金', '土']
 
@@ -21,6 +24,7 @@ export default function ForecastClient({ initialForecast, initialSpot, currentMo
   const [forecast, setForecast] = useState<DayForecast[]>(initialForecast)
   const [selDay, setSelDay] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [battleWindow, setBattleWindow] = useState<BattleWindowType | null>(null)
 
   const loadWeather = useCallback(async (s: Spot) => {
     setLoading(true)
@@ -292,6 +296,21 @@ export default function ForecastClient({ initialForecast, initialSpot, currentMo
                 </div>
               ))}
             </div>
+
+            {/* ━━━ 勝負時間 & 行動ボタン ━━━ */}
+            <div className="ocean-divider mt-4 mb-0" />
+            <BattleWindow
+              date={`${sel.date.getFullYear()}-${String(sel.date.getMonth() + 1).padStart(2, '0')}-${String(sel.date.getDate()).padStart(2, '0')}`}
+              onCalc={setBattleWindow}
+            />
+            {battleWindow && (
+              <ActionButtons
+                spotName={spot.name}
+                battleStart={battleWindow.start}
+                battleEnd={battleWindow.end}
+                date={`${sel.date.getFullYear()}-${String(sel.date.getMonth() + 1).padStart(2, '0')}-${String(sel.date.getDate()).padStart(2, '0')}`}
+              />
+            )}
           </div>
         </section>
       )}
