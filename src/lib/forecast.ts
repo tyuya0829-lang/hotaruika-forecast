@@ -99,9 +99,10 @@ export function scoreToLevel(score: number): number {
 }
 
 export const LEVEL_NAMES = ['湧きなし', 'プチ湧き', 'チョイ湧き', '湧き', '大湧き', '爆湧き'] as const
-export const LEVEL_COLORS = ['#B4B2A9', '#888780', '#378ADD', '#1D9E75', '#EF9F27', '#E24B4A']
-export const LEVEL_BG     = ['#B4B2A912','#88878012','#378ADD22','#1D9E7522','#EF9F2722','#E24B4A22']
-export const LEVEL_TEXT   = ['#5F5E5A',  '#5F5E5A',  '#185FA5',  '#0F6E56',  '#854F0B',  '#A32D2D']
+// 生物発光カラー：暗海→淡青→シアン→明シアン→テール→電光テール
+export const LEVEL_COLORS = ['#2a3a4a', '#0e6a78', '#0ea5c9', '#00c8e8', '#00e5ff', '#1bffd7']
+export const LEVEL_BG     = ['rgba(42,58,74,0.2)', 'rgba(14,106,120,0.2)', 'rgba(14,165,201,0.18)', 'rgba(0,200,232,0.18)', 'rgba(0,229,255,0.18)', 'rgba(27,255,215,0.2)']
+export const LEVEL_TEXT   = ['#4a6070', '#0e9aac', '#0ea5c9', '#00c8e8', '#00e5ff', '#1bffd7']
 
 export interface DayForecast {
   date: Date
