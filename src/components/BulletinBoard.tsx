@@ -21,7 +21,7 @@ interface Props { spots: typeof SPOTS }
 
 export default function BulletinBoard({ spots }: Props) {
   const [posts, setPosts] = useState<Post[]>(SAMPLE_POSTS)
-  const [spotName, setSpotName] = useState<string>(spots[0].name)
+  const [spotName, setSpotName] = useState<string>('')
   const [level, setLevel] = useState<string>(LEVEL_NAMES[3])
   const [body, setBody] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -36,7 +36,7 @@ export default function BulletinBoard({ spots }: Props) {
   }, [])
 
   async function handleSubmit() {
-    if (!body.trim()) return
+    if (!body.trim() || !spotName.trim()) return
     setSubmitting(true)
     setError('')
     try {
@@ -106,14 +106,20 @@ export default function BulletinBoard({ spots }: Props) {
 
         {/* 投稿フォーム */}
         <div className="border-t border-gray-800 p-4 bg-gray-950/50">
+          {/* スポット名：自由入力 + 候補サジェスト */}
+          <datalist id="spot-suggestions">
+            {spots.map(s => <option key={s.id} value={s.name}>{s.pref} — {s.desc}</option>)}
+          </datalist>
           <div className="flex gap-2 mb-2">
-            <select
+            <input
+              type="text"
+              list="spot-suggestions"
               value={spotName}
               onChange={e => setSpotName(e.target.value)}
-              className="flex-1 bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded-lg px-2 py-1.5"
-            >
-              {spots.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
-            </select>
+              placeholder="場所を入力（例：越前漁港、地元の港など）"
+              maxLength={50}
+              className="flex-1 bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded-lg px-2 py-1.5 placeholder-gray-600"
+            />
             <select
               value={level}
               onChange={e => setLevel(e.target.value)}
@@ -132,7 +138,7 @@ export default function BulletinBoard({ spots }: Props) {
           <div className="flex justify-end mt-2">
             <button
               onClick={handleSubmit}
-              disabled={submitting || !body.trim()}
+              disabled={submitting || !body.trim() || !spotName.trim()}
               className="text-xs px-4 py-2 bg-teal-700 hover:bg-teal-600 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-lg transition-colors"
             >
               {submitting ? '投稿中...' : '投稿する'}
