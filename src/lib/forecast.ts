@@ -1,0 +1,182 @@
+// ================================================================
+// 月齢・予報スコア計算ユーティリティ
+// ================================================================
+
+export const SPOTS = [
+  { id: 'hamasaka-beach', name: '浜坂サンビーチ', pref: '兵庫', lat: 35.6287, lon: 134.4474, desc: '砂浜・駐車場あり・JR浜坂駅徒歩15分' },
+  { id: 'hamasaka-port',  name: '浜坂漁港',      pref: '兵庫', lat: 35.6283, lon: 134.4490, desc: '堤防・長柄タモ推奨' },
+  { id: 'kasumi-port',    name: '香住港',         pref: '兵庫', lat: 35.6271, lon: 134.6989, desc: '漁港堤防・駐車場あり' },
+  { id: 'shibayama',     name: '柴山港',         pref: '兵庫', lat: 35.6130, lon: 134.7361, desc: '但馬漁港・静かなポイント' },
+  { id: 'urato',          name: '浦富海岸',       pref: '鳥取', lat: 35.6100, lon: 134.3780, desc: '岩美・リアス式海岸・透明度高い' },
+  { id: 'tottori-coast',  name: '鳥取海岸',       pref: '鳥取', lat: 35.5480, lon: 134.1962, desc: '砂丘周辺・広域砂浜' },
+] as const
+
+export type SpotId = typeof SPOTS[number]['id']
+export type Spot = typeof SPOTS[number]
+
+// 新月基準日（国立天文台）
+const MOON_REF_MS = new Date('2026-03-19T00:00:00Z').getTime()
+const MOON_CYCLE_MS = 29.53059 * 86_400_000
+
+export function moonAge(date: Date): number {
+  return (((date.getTime() - MOON_REF_MS) % MOON_CYCLE_MS) + MOON_CYCLE_MS) % MOON_CYCLE_MS / MOON_CYCLE_MS * 29.53059
+}
+
+export function moonEmoji(age: number): string {
+  const p = age / 29.53
+  if (p < 0.03 || p > 0.97) return '🌑'
+  if (p < 0.22) return '🌒'
+  if (p < 0.28) return '🌓'
+  if (p < 0.47) return '🌔'
+  if (p < 0.53) return '🌕'
+  if (p < 0.72) return '🌖'
+  if (p < 0.78) return '🌗'
+  return '🌘'
+}
+
+// ================================================================
+// WMO 天気コード → 日本語 / スコア
+// ================================================================
+export const WMO_LABEL: Record<number, string> = {
+  0:'快晴', 1:'晴れ', 2:'晴れ', 3:'曇り',
+  45:'霧', 48:'霧',
+  51:'霧雨', 53:'霧雨', 55:'霧雨',
+  61:'雨', 63:'雨', 65:'大雨',
+  71:'雪', 73:'雪', 75:'大雪',
+  80:'にわか雨', 81:'にわか雨', 82:'強雨',
+  95:'雷雨', 96:'雷雨', 99:'雷雨',
+}
+const WMO_SCORE: Record<number, number> = {
+  0:4, 1:3, 2:3, 3:2, 45:1, 48:1,
+  51:1, 53:1, 55:0, 61:0, 63:0, 65:0,
+  71:1, 73:0, 75:0, 80:1, 81:1, 82:0,
+  95:0, 96:0, 99:0,
+}
+
+const WIND_DIRS = ['北','北北東','北東','東北東','東','東南東','南東','南南東','南','南南西','南西','西南西','西','西北西','北西','北北西']
+export function windDirLabel(deg: number) { return WIND_DIRS[Math.round(deg / 22.5) % 16] }
+
+// ================================================================
+// スコア計算（重み付き合成）
+// ================================================================
+function moonScore(age: number): number {
+  const d = Math.min(age, 29.53 - age)
+  if (d <= 1.5) return 4
+  if (d <= 3)   return 3
+  if (d <= 5)   return 2.5
+  if (d <= 8)   return 1.5
+  if (d <= 11)  return 0.5
+  return 0
+}
+function weatherScore(wc: number): number { return WMO_SCORE[wc] ?? 2 }
+function windScore(deg: number): number {
+  if ((deg >= 292.5 && deg <= 360) || (deg >= 0 && deg <= 67.5)) return 4
+  if (deg > 180 && deg <= 292.5) return 2
+  return 1
+}
+function tempScore(t: number): number {
+  if (t >= 15) return 3
+  if (t >= 12) return 2.5
+  if (t >= 8)  return 2
+  if (t >= 5)  return 1
+  return 0
+}
+
+export function composite(ms: number, ws: number, wd: number, ts: number): number {
+  return ms * 0.50 + ws * 0.25 + wd * 0.15 + ts * 0.10
+}
+
+export function scoreToLevel(score: number): number {
+  if (score >= 3.5) return 5
+  if (score >= 2.5) return 4
+  if (score >= 1.8) return 3
+  if (score >= 1.1) return 2
+  if (score >= 0.5) return 1
+  return 0
+}
+
+export const LEVEL_NAMES = ['湧きなし', 'プチ湧き', 'チョイ湧き', '湧き', '大湧き', '爆湧き'] as const
+export const LEVEL_COLORS = ['#B4B2A9', '#888780', '#378ADD', '#1D9E75', '#EF9F27', '#E24B4A']
+export const LEVEL_BG     = ['#B4B2A912','#88878012','#378ADD22','#1D9E7522','#EF9F2722','#E24B4A22']
+export const LEVEL_TEXT   = ['#5F5E5A',  '#5F5E5A',  '#185FA5',  '#0F6E56',  '#854F0B',  '#A32D2D']
+
+export interface DayForecast {
+  date: Date
+  age: number
+  ms: number
+  ws: number
+  wd: number
+  ts: number
+  score: number
+  level: number
+  weather: string
+  weatherCode: number
+  windDeg: number
+  windDir: string
+  temp: number
+  precip: number
+}
+
+export function buildForecast(
+  weatherData: WeatherResponse | null,
+  referenceDate: Date = new Date()
+): DayForecast[] {
+  const base = new Date(referenceDate)
+  base.setHours(0, 0, 0, 0)
+
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(base.getTime() + i * 86_400_000)
+    const age = moonAge(d)
+    const ms  = moonScore(age)
+
+    const wc    = weatherData?.daily.weathercode[i]    ?? 1
+    const temp  = weatherData?.daily.temperature_2m_max[i] ?? 12
+    const precip = weatherData?.daily.precipitation_sum[i] ?? 0
+    const windDeg = weatherData?.daily.winddirection_10m_dominant[i] ?? 315
+
+    const ws = weatherScore(wc)
+    const wd = windScore(windDeg)
+    const ts = tempScore(temp)
+    const score = composite(ms, ws, wd, ts)
+
+    return {
+      date: d,
+      age,
+      ms, ws, wd, ts,
+      score,
+      level: scoreToLevel(score),
+      weather: WMO_LABEL[wc] ?? '不明',
+      weatherCode: wc,
+      windDeg,
+      windDir: windDirLabel(windDeg),
+      temp,
+      precip,
+    }
+  })
+}
+
+// ================================================================
+// Open-Meteo API 型
+// ================================================================
+export interface WeatherResponse {
+  daily: {
+    time: string[]
+    weathercode: number[]
+    temperature_2m_max: number[]
+    precipitation_sum: number[]
+    windspeed_10m_max: number[]
+    winddirection_10m_dominant: number[]
+  }
+}
+
+export async function fetchWeather(lat: number, lon: number): Promise<WeatherResponse> {
+  const url = new URL('https://api.open-meteo.com/v1/forecast')
+  url.searchParams.set('latitude', String(lat))
+  url.searchParams.set('longitude', String(lon))
+  url.searchParams.set('daily', 'weathercode,temperature_2m_max,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant')
+  url.searchParams.set('timezone', 'Asia/Tokyo')
+  url.searchParams.set('forecast_days', '7')
+  const res = await fetch(url.toString(), { next: { revalidate: 3600 } })
+  if (!res.ok) throw new Error('Weather fetch failed')
+  return res.json()
+}
