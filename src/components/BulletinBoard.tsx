@@ -22,6 +22,7 @@ interface Props { spots: typeof SPOTS }
 export default function BulletinBoard({ spots }: Props) {
   const [posts, setPosts] = useState<Post[]>(SAMPLE_POSTS)
   const [spotName, setSpotName] = useState<string>('')
+  const [nickname, setNickname] = useState<string>('')
   const [level, setLevel] = useState<string>(LEVEL_NAMES[3])
   const [body, setBody] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -43,7 +44,7 @@ export default function BulletinBoard({ spots }: Props) {
       const res = await fetch('/api/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ spot_name: spotName, level, body }),
+        body: JSON.stringify({ spot_name: spotName, level, body, nickname }),
       })
       if (res.ok) {
         const newPost: Post = await res.json()
@@ -56,6 +57,7 @@ export default function BulletinBoard({ spots }: Props) {
           spot_name: spotName,
           level,
           body,
+          nickname: nickname.trim() || undefined,
           created_at: new Date().toISOString(),
         }
         setPosts(prev => [tempPost, ...prev])
@@ -90,6 +92,11 @@ export default function BulletinBoard({ spots }: Props) {
                   <span className="text-xs bg-blue-900/50 text-blue-400 border border-blue-800 px-2 py-0.5 rounded-full">
                     {p.spot_name}
                   </span>
+                  {p.nickname && (
+                    <span className="text-xs text-gray-400 font-medium">
+                      {p.nickname}
+                    </span>
+                  )}
                   <span className="text-xs text-gray-600">{formatTime(p.created_at)}</span>
                 </div>
                 <p className="text-sm text-gray-300 leading-relaxed mb-1.5">{p.body}</p>
@@ -116,7 +123,7 @@ export default function BulletinBoard({ spots }: Props) {
               list="spot-suggestions"
               value={spotName}
               onChange={e => setSpotName(e.target.value)}
-              placeholder="場所を入力（例：越前漁港、地元の港など）"
+              placeholder="場所（例：越前漁港、地元の港など）"
               maxLength={50}
               className="flex-1 bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded-lg px-2 py-1.5 placeholder-gray-600"
             />
@@ -128,6 +135,14 @@ export default function BulletinBoard({ spots }: Props) {
               {[...LEVEL_NAMES].reverse().map(l => <option key={l} value={l}>{l}</option>)}
             </select>
           </div>
+          <input
+            type="text"
+            value={nickname}
+            onChange={e => setNickname(e.target.value)}
+            placeholder="ニックネーム（任意）"
+            maxLength={20}
+            className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded-lg px-2 py-1.5 placeholder-gray-600 mb-2"
+          />
           <textarea
             value={body}
             onChange={e => setBody(e.target.value)}

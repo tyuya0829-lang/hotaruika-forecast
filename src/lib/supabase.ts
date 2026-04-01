@@ -10,5 +10,6 @@ export interface Post {
   spot_name: string
   level: string
   body: string
+  nickname?: string
   created_at: string
 }

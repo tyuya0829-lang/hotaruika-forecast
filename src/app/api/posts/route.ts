@@ -14,7 +14,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const { spot_name, level, body: postBody } = body
+  const { spot_name, level, body: postBody, nickname } = body
 
   if (!spot_name || !level || !postBody?.trim()) {
     return NextResponse.json({ error: 'missing fields' }, { status: 400 })
@@ -22,7 +22,12 @@ export async function POST(req: NextRequest) {
 
   const { data, error } = await supabase
     .from('posts')
-    .insert([{ spot_name, level, body: postBody.trim() }])
+    .insert([{
+      spot_name,
+      level,
+      body: postBody.trim(),
+      nickname: nickname?.trim() || null,
+    }])
     .select()
     .single()
 
