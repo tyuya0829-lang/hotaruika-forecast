@@ -9,6 +9,9 @@ export const SPOTS = [
   { id: 'shibayama',     name: '柴山港',         pref: '兵庫', lat: 35.6130, lon: 134.7361, desc: '但馬漁港・静かなポイント' },
   { id: 'urato',          name: '浦富海岸',       pref: '鳥取', lat: 35.6100, lon: 134.3780, desc: '岩美・リアス式海岸・透明度高い' },
   { id: 'tottori-coast',  name: '鳥取海岸',       pref: '鳥取', lat: 35.5480, lon: 134.1962, desc: '砂丘周辺・広域砂浜' },
+  { id: 'echizen-port',   name: '越前漁港',       pref: '福井', lat: 35.8700, lon: 136.0440, desc: '越前町・日本海に面した漁港' },
+  { id: 'mikuni-port',    name: '三国港',         pref: '福井', lat: 36.2180, lon: 136.1700, desc: '坂井市三国・九頭竜川河口・広い堤防' },
+  { id: 'echizen-coast',  name: '越前海岸',       pref: '福井', lat: 35.8200, lon: 136.0100, desc: '断崖絶壁のリアス式海岸・夜間は足元注意' },
 ] as const
 
 export type SpotId = typeof SPOTS[number]['id']

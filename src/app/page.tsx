@@ -23,7 +23,7 @@ export default async function Home() {
           <div className="flex items-center gap-2">
             <span className="text-lg">🦑</span>
             <span className="font-semibold text-white text-sm tracking-tight">ホタルイカ予報</span>
-            <span className="text-xs bg-teal-900/60 text-teal-400 px-2 py-0.5 rounded-full border border-teal-800">兵庫・鳥取版</span>
+            <span className="text-xs bg-teal-900/60 text-teal-400 px-2 py-0.5 rounded-full border border-teal-800">兵庫・鳥取・福井版</span>
           </div>
           <div className="flex items-center gap-1.5 text-xs text-gray-500">
             <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse inline-block" />
