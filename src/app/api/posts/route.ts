@@ -14,7 +14,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const { spot_name, level, body: postBody, nickname } = body
+  const { spot_name, level, body: postBody, nickname, image_url } = body
 
   if (!spot_name || !level || !postBody?.trim()) {
     return NextResponse.json({ error: 'missing fields' }, { status: 400 })
@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
       level,
       body: postBody.trim(),
       nickname: nickname?.trim() || null,
+      image_url: image_url || null,
     }])
     .select()
     .single()

@@ -11,5 +11,6 @@ export interface Post {
   level: string
   body: string
   nickname?: string
+  image_url?: string
   created_at: string
 }
