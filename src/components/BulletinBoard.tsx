@@ -6,10 +6,10 @@ import { supabase } from '@/lib/supabase'
 import type { Post } from '@/lib/supabase'
 
 const SAMPLE_POSTS: Post[] = [
-  { id: '1', spot_name: '浜坂サンビーチ', level: '大湧き',    body: '新月前夜、かなり湧きました！砂浜沿いが多め。ウェーダー必須です。', created_at: '2026-03-29T02:41:00Z' },
-  { id: '2', spot_name: '浦富海岸',       level: '湧き',      body: '岩場周辺で確認できました。1時間で30匹ほど。光ってる個体もいて幻想的。', created_at: '2026-03-28T23:55:00Z' },
-  { id: '3', spot_name: '香住港',         level: '湧きなし',  body: '月が明るくて全然ダメでした。新月狙いで出直します。', created_at: '2026-03-22T01:10:00Z' },
-  { id: '4', spot_name: '浜坂漁港',       level: 'チョイ湧き', body: '港の外側堤防で少し確認。また来月リベンジ！', created_at: '2026-03-20T03:15:00Z' },
+  { id: '1', spot_name: '甲楽城漁港',  level: '大寄り',    body: '新月前夜、かなり寄りました！堤防際に多め。長柄タモ推奨です。', created_at: '2026-03-29T02:41:00Z' },
+  { id: '2', spot_name: '越前漁港',    level: '寄り',      body: '断崖下の岩場周辺で確認できました。1時間で30匹ほど。光ってる個体もいて幻想的。', created_at: '2026-03-28T23:55:00Z' },
+  { id: '3', spot_name: '香住港',      level: '寄りなし',  body: '月が明るくて全然ダメでした。新月狙いで出直します。', created_at: '2026-03-22T01:10:00Z' },
+  { id: '4', spot_name: '浜坂漁港',    level: 'チョイ寄り', body: '港の外側堤防で少し確認。また来月リベンジ！', created_at: '2026-03-20T03:15:00Z' },
 ]
 
 function formatTime(iso: string) {

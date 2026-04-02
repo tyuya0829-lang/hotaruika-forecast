@@ -3,13 +3,12 @@
 // ================================================================
 
 export const SPOTS = [
-  { id: 'hamasaka-beach', name: '浜坂サンビーチ', pref: '兵庫', lat: 35.6287, lon: 134.4474, desc: '砂浜・駐車場あり・JR浜坂駅徒歩15分' },
-  { id: 'hamasaka-port',  name: '浜坂漁港',      pref: '兵庫', lat: 35.6283, lon: 134.4490, desc: '堤防・長柄タモ推奨' },
+  { id: 'hamasaka-port',  name: '浜坂漁港',      pref: '兵庫', lat: 35.6283, lon: 134.4490, desc: '堤防・長柄タモ推奨・漁港への接岸がメイン' },
   { id: 'kasumi-port',    name: '香住港',         pref: '兵庫', lat: 35.6271, lon: 134.6989, desc: '漁港堤防・駐車場あり' },
-  { id: 'shibayama',     name: '柴山港',         pref: '兵庫', lat: 35.6130, lon: 134.7361, desc: '但馬漁港・静かなポイント' },
-  { id: 'urato',          name: '浦富海岸',       pref: '鳥取', lat: 35.6100, lon: 134.3780, desc: '岩美・リアス式海岸・透明度高い' },
-  { id: 'tottori-coast',  name: '鳥取海岸',       pref: '鳥取', lat: 35.5480, lon: 134.1962, desc: '砂丘周辺・広域砂浜' },
-  { id: 'echizen-port',   name: '越前漁港',       pref: '福井', lat: 35.8700, lon: 136.0440, desc: '越前町・日本海に面した漁港' },
+  { id: 'shibayama',      name: '柴山港',         pref: '兵庫', lat: 35.6130, lon: 134.7361, desc: '但馬漁港・静かなポイント' },
+  { id: 'kora-port',      name: '甲楽城漁港',     pref: '福井', lat: 35.6150, lon: 136.0180, desc: '漁港堤防・ホタルイカ接岸実績あり' },
+  { id: 'shinbo-port',    name: '新保港',         pref: '福井', lat: 35.6400, lon: 136.0350, desc: '越前海岸・定番すくいポイント' },
+  { id: 'echizen-port',   name: '越前漁港',       pref: '福井', lat: 35.8700, lon: 136.0440, desc: '越前町・断崖地形で急深・ホタルイカが寄りやすい' },
   { id: 'mikuni-port',    name: '三国港',         pref: '福井', lat: 36.2180, lon: 136.1700, desc: '坂井市三国・九頭竜川河口・広い堤防' },
   { id: 'echizen-coast',  name: '越前海岸',       pref: '福井', lat: 35.8200, lon: 136.0100, desc: '断崖絶壁のリアス式海岸・夜間は足元注意' },
 ] as const
@@ -98,7 +97,7 @@ export function scoreToLevel(score: number): number {
   return 0
 }
 
-export const LEVEL_NAMES = ['湧きなし', 'プチ湧き', 'チョイ湧き', '湧き', '大湧き', '爆湧き'] as const
+export const LEVEL_NAMES = ['寄りなし', 'プチ寄り', 'チョイ寄り', '寄り', '大寄り', '爆寄り'] as const
 // 生物発光カラー：暗海→淡青→シアン→明シアン→テール→電光テール
 export const LEVEL_COLORS = ['#2a3a4a', '#0e6a78', '#0ea5c9', '#00c8e8', '#00e5ff', '#1bffd7']
 export const LEVEL_BG     = ['rgba(42,58,74,0.2)', 'rgba(14,106,120,0.2)', 'rgba(14,165,201,0.18)', 'rgba(0,200,232,0.18)', 'rgba(0,229,255,0.18)', 'rgba(27,255,215,0.2)']

@@ -115,7 +115,7 @@ export default function ForecastClient({ initialForecast, initialSpot, currentMo
 
           {/* 今夜の予報 */}
           <div className="glass-card rounded-2xl p-3">
-            <p className="section-title mb-1" style={{ fontSize: '0.58rem' }}>今夜の予報</p>
+            <p className="section-title mb-1" style={{ fontSize: '0.58rem' }}>今夜の寄り付き</p>
             <p className="text-sm font-bold" style={{ color: LEVEL_TEXT[forecast[0]?.level ?? 0] }}>
               {LEVEL_NAMES[forecast[0]?.level ?? 0]}
             </p>

@@ -34,17 +34,31 @@ export default async function Home() {
           <div className="flex items-center gap-2.5">
             <span className="text-xl squid-glow select-none">🦑</span>
             <div>
-              <span
-                className="font-bold text-sm tracking-wide"
-                style={{
-                  background: 'linear-gradient(90deg, #e0f7ff 0%, #00e5ff 50%, #1bffd7 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                ホタルイカ予報
-              </span>
+              <div>
+                <span
+                  className="font-bold text-sm tracking-wide"
+                  style={{
+                    background: 'linear-gradient(90deg, #e0f7ff 0%, #00e5ff 50%, #1bffd7 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    display: 'block',
+                  }}
+                >
+                  ホタルイカ寄り付き予報
+                </span>
+                <span
+                  style={{
+                    display: 'block',
+                    fontSize: '0.6rem',
+                    color: 'rgba(0,200,230,0.5)',
+                    letterSpacing: '0.12em',
+                    marginTop: 1,
+                  }}
+                >
+                  今夜、寄るか。
+                </span>
+              </div>
             </div>
             <span
               className="text-xs px-2 py-0.5 rounded-full font-medium"
@@ -54,7 +68,7 @@ export default async function Home() {
                 color: '#00c8e8',
               }}
             >
-              兵庫・鳥取・福井版
+              兵庫・福井版
             </span>
           </div>
           <div className="flex items-center gap-1.5">
