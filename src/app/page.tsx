@@ -1,4 +1,3 @@
-```typescript
 import React from "react";
 import Link from "next/link";
 import StarryBackground from "@/components/StarryBackground";
@@ -336,4 +335,3 @@ export default async function HomePage() {
     </>
   );
 }
-```
